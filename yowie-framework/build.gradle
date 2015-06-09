@@ -1,0 +1,101 @@
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'io.spring.dependency-management'
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+jar {
+    baseName = 'yowie'
+    version = '0.1.0-SNAPSHOT'
+}
+
+def binariesType = {
+
+    switch (System.properties.'os.name') {
+
+        case 'Mac OS X':
+            return 'dylib'
+        default:
+            return 'so'
+    }
+}
+
+configurations.create('binaries')
+configurations.create('angular')
+
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/main/resources'
+            srcDir new File(buildDir, 'yowie-web')
+        }
+    }
+}
+
+dependencies {
+
+    compile project(':yowie-web')
+    compile project(':yowie-api')
+
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-websocket"
+    compile "org.springframework.boot:spring-boot-starter-integration"
+    compile "org.springframework.integration:spring-integration-websocket"
+    compile("org.springframework.boot:spring-boot-starter-groovy-templates") {
+        exclude group: 'org.codehaus.groovy'
+    }
+    compile 'org.springframework.integration:spring-integration-event:4.1.3.RELEASE'
+
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.codehaus.groovy:groovy-all:$groovy.version"
+
+    compile "org.apache.mesos:mesos:$mesos.version"
+
+    compile "com.fasterxml.jackson.core:jackson-core:$jackson.version"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jackson.version"
+
+    compile 'com.netflix.feign:feign-core:7.2.1'
+    compile 'com.netflix.feign:feign-jackson:7.2.1'
+
+    binaries "org.apache.mesos:libmesos:$mesos.version@${binariesType()}"
+
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.mockito:mockito-all:1.10.19'
+    testCompile 'org.skyscreamer:jsonassert:1.2.3'
+    testCompile 'com.jayway.jsonpath:json-path-assert:2.0.0'
+    testCompile 'com.github.tomakehurst:wiremock:1.56'
+    testCompile 'cglib:cglib-nodep:3.1'
+
+    angular project(':yowie-web')
+}
+
+task downloadBinaries(type: Copy) {
+
+    from configurations.binaries
+    into project.rootDir
+}
+
+task cleanBinaries() {
+
+    def binaries = new File(project.rootDir, "libmesos-${mesos.version}.dylib")
+
+    if (binaries.exists()) {
+        binaries.delete()
+    }
+}
+
+task extractDeps(type: Copy) {
+
+    from {
+        configurations.angular.collect { zipTree(it) }
+    }
+    into new File(buildDir, "yowie-web/static")
+}
+
+project.tasks.clean.dependsOn(project.tasks.cleanBinaries)
+project.tasks.processResources.dependsOn(project.tasks.extractDeps)
+project.tasks.build.dependsOn(project.tasks.downloadBinaries)

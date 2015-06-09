@@ -1,0 +1,15 @@
+apply plugin: 'groovy'
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+dependencies {
+
+    compile "org.codehaus.groovy:groovy-all:$groovy.version"
+    compile "org.apache.mesos:mesos:$mesos.version"
+    compile "com.fasterxml.jackson.core:jackson-annotations:$jackson.version"
+    compile 'javax.validation:validation-api:1.1.0.Final'
+    compile "org.hibernate:hibernate-validator:$hibernateValidator.version"
+
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+}

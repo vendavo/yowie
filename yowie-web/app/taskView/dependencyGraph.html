@@ -1,0 +1,13 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">
+            <span>{{context.group.name}}</span>
+            <span class="badge">{{context.group.tasks.length}}</span>
+            &nbsp;
+            <span class="text-muted">{{context.duration | moment}}</span>
+        </h3>
+    </div>
+    <div class="modal-body">
+        <div yw-dependency context="context"></div>
+    </div>
+</div>

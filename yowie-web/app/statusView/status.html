@@ -1,0 +1,45 @@
+<div class="main">
+
+    <h1 class="page-header">Status</h1>
+
+    <div class="row placeholders">
+        <div class="col-xs-6 col-sm-6-offset-1 placeholder panel panel-primary"
+             ng-repeat="resource in availableResources.value.offers">
+            <table class="table" style="text-align: left">
+                <tr>
+                    <td>ID:</td>
+                    <td>{{resource.id}}</td>
+                </tr>
+                <tr>
+                    <td>CPU:</td>
+                    <td>{{resource.cpus}}</td>
+                </tr>
+                <tr>
+                    <td>Memory:</td>
+                    <td>{{resource.mem}}</td>
+                </tr>
+                <tr>
+                    <td>Disk:</td>
+                    <td>{{resource.disk}}</td>
+                </tr>
+                <tr>
+                    <td>Ports:</td>
+                    <td>{{resource.portsDescription}}</td>
+                </tr>
+
+                <tr>
+                    <td>Attributes:</td>
+                    <td>
+                        <span ng-repeat="(key, value) in resource.attributes">
+                            <span class="label label-default">{{key}}</span>&nbsp;
+                            <span class="label label-info">{{value}}</span>
+                            <br />
+                        </span>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+</div>

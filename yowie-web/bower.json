@@ -1,0 +1,21 @@
+{
+  "name": "Yowie framework",
+  "description": "Web UI for Yowie framework",
+  "version": "0.1.0-SNAPSHOT",
+  "private": true,
+  "dependencies": {
+    "angular": "1.3.x",
+    "angular-route": "1.3.x",
+    "angular-loader": "1.3.x",
+    "angular-mocks": "~1.3.x",
+    "angular-resource": "~1.3.0",
+    "angular-bootstrap": "0.13.0",
+    "moment": "2.10.3",
+    "html5-boilerplate": "~4.3.0",
+    "sockjs": "latest",
+    "stomp-websocket": "latest",
+    "lodash": "latest",
+    "bootstrap": "latest",
+    "underscore": "latest"
+  }
+}

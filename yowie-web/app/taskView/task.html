@@ -1,0 +1,92 @@
+<div class="main">
+
+    <h1 class="page-header">Tasks</h1>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">In progress</h3>
+        </div>
+        <div class="panel-body" ng-repeat="context in groupContexts.value  | filter: {done: false} | orderBy: 'startTime'">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span>{{context.group.name}}</span>
+                        <span class="badge">{{context.group.tasks.length}}</span>
+                        <button class="btn btn-default btn-xs pull-right" ng-click="showDependencyGraph(context)">Show dependency graph</button>
+                    </h3>
+                </div>
+
+                <table class="table" style="text-align: left">
+                    <tr>
+                        <th>id</th>
+                        <th>Name</th>
+                        <th>Resources</th>
+                        <th>Start Time</th>
+                        <th>Events</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr ng-repeat="taskContext in context.taskContexts | orderBy: startTime">
+                        <td>{{taskContext.task.id}}</td>
+                        <td>{{taskContext.task.name}}</td>
+                        <td>{{taskContext.task.cpus}}/{{taskContext.task.mem}}</td>
+                        <td yw-date date-time="taskContext.startTime"></td>
+                        <td yw-event context="taskContext"></td>
+                        <td><a class="glyphicon glyphicon-trash" style="cursor:hand;" ng-click="kill(taskContext)"></a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Done</h3>
+        </div>
+        <div class="panel-body" ng-repeat="context in groupContexts.value  | filter: {done: true} | orderBy: '-endTime'">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span>{{context.group.name}}</span>
+                        <span class="badge">{{context.group.tasks.length}}</span>
+                        &nbsp;
+                        <span class="text-muted">{{context.duration | moment}}</span>
+                        <span><span yw-date date-time="context.startTime"></span>&nbsp;-&nbsp;<span yw-date date-time="context.endTime"></span></span>
+                        <button class="btn btn-default btn-xs pull-right"
+                                ng-click="isGroupCollapsed = !isGroupCollapsed">Toggle Tasks
+                        </button>   
+                        <button class="btn btn-default btn-xs pull-right" ng-click="showDependencyGraph(context)">Show dependency graph</button>
+                    </h3>
+                </div>
+
+
+                <table collapse="!isGroupCollapsed" class="table" style="text-align: left">
+                    <tr>
+                        <th>id</th>
+                        <th>Name</th>
+                        <th>Resources</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Events</th>
+                    </tr>
+                    <tr ng-repeat="taskContext in context.taskContexts">
+                        <td>{{taskContext.task.id}}</td>
+                        <td>{{taskContext.task.name}}</td>
+                        <td>{{taskContext.task.cpus}}/{{taskContext.task.mem}}</td>
+                        <td yw-date date-time="taskContext.startTime"></td>
+                        <td yw-date date-time="taskContext.endTime"></td>
+                        <td>
+                            <button class="btn btn-default btn-sm" ng-click="isCollapsed = !isCollapsed">Toggle Events
+                            </button>
+                            <div collapse="!isCollapsed">
+                                <div yw-event context="taskContext"></div>
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+{
+  "name": "angular-bootstrap",
+  "version": "0.12.0",
+  "description": "The companion suite(s) to the AngularJS framework.",
+  "keywords": [
+    "angular",
+    "angular-ui",
+    "bootstrap"
+  ],
+  "homepage": "http://angular-ui.github.io/bootstrap/",
+  "bugs": {
+    "url": "https://github.com/angular-ui/bootstrap/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular-ui/bootstrap.git"
+  },
+  "license": "MIT",
+  "contributors": "https://github.com/angular-ui/bootstrap/graphs/contributors",
+  "main": "dist/ui-bootstrap-tpls.min.js",
+  "files": [
+    "src",
+    "template",
+    "dist"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-ngdocs": "~0.1.1",
+    "grunt-conventional-changelog": "~0.1.2",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-uglify": "~0.3.0",
+    "grunt-contrib-watch": "~0.5.0",
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-html2js": "~0.2.0",
+    "grunt-karma": "~0.4.4",
+    "node-markdown": "0.1.1",
+    "semver": "~2.2.0",
+    "shelljs": "~0.2.0",
+    "grunt-ddescribe-iit": "0.0.4"
+  },
+  "gitHead": "0938d3fec3434436e5fab6ed1d12d82b69f922ee",
+  "_id": "angular-bootstrap@0.12.0",
+  "scripts": {},
+  "_shasum": "751f65f7ac8c7aa2fbc49116e1f47b7fd64a65be",
+  "_from": "angular-bootstrap@*",
+  "_npmVersion": "2.1.11",
+  "_nodeVersion": "0.10.33",
+  "_npmUser": {
+    "name": "leon",
+    "email": "leon@radley.se"
+  },
+  "maintainers": [
+    {
+      "name": "leon",
+      "email": "leon@radley.se"
+    }
+  ],
+  "dist": {
+    "shasum": "751f65f7ac8c7aa2fbc49116e1f47b7fd64a65be",
+    "tarball": "http://registry.npmjs.org/angular-bootstrap/-/angular-bootstrap-0.12.0.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/angular-bootstrap/-/angular-bootstrap-0.12.0.tgz"
+}

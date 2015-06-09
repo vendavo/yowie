@@ -1,0 +1,20 @@
+apply plugin: 'groovy'
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+dependencies {
+    compile project(':yowie-statistics')
+    compile 'org.elasticsearch:elasticsearch:1.5.2'
+
+    compile "com.fasterxml.jackson.core:jackson-core:$jackson.version"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jackson.version"
+    
+    compile 'org.springframework:spring-context:4.1.6.RELEASE'
+
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.elasticsearch:elasticsearch:1.5.2:tests@jar'
+    testCompile 'com.carrotsearch.randomizedtesting:randomizedtesting-runner:2.1.14'
+    testCompile 'org.apache.lucene:lucene-test-framework:4.10.4'
+    testCompile 'junit:junit:4.12'
+}

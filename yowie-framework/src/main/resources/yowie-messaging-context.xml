@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-event="http://www.springframework.org/schema/integration/event"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd http://www.springframework.org/schema/integration/event http://www.springframework.org/schema/integration/event/spring-integration-event.xsd">
+
+    <int:channel id="wsResources"/>
+    <int:channel id="frameworkResources"/>
+    <int:channel id="connectionManagerResources"/>
+
+    <int:channel id="resources"/>
+    <int:channel id="taskUpdates"/>
+    <int:channel id="groupUpdates"/>
+    <int:channel id="eventChannel"/>
+    <int:channel id="mesosEventChannel"/>
+
+    <int-event:inbound-channel-adapter channel="eventChannel"/>
+    <int-event:outbound-channel-adapter channel="mesosEventChannel"/>
+
+    <int:bridge input-channel="resources" output-channel="frameworkResources"/>
+    <int:bridge input-channel="resources" output-channel="wsResources"/>
+    <int:bridge input-channel="resources" output-channel="connectionManagerResources"/>
+
+    <int:service-activator input-channel="frameworkResources" ref="framework" method="updateResources"/>
+    <int:service-activator input-channel="wsResources" ref="webSocketGateway" method="sendStatus"/>
+    <int:service-activator input-channel="taskUpdates" ref="webSocketGateway" method="sendTaskStatus"/>
+    <int:service-activator input-channel="groupUpdates" ref="webSocketGateway" method="sendGroupStatus"/>
+
+    <int:service-activator input-channel="connectionManagerResources" ref="connectionManager" method="onResources"/>
+    <int:service-activator input-channel="eventChannel" ref="connectionManager" method="onApplicationStarted"/>
+
+</beans>

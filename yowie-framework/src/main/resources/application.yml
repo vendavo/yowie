@@ -1,0 +1,15 @@
+spring.groovy.template.cache: false
+mesos:
+  url: eps-perf.dc.vendavo.com
+#  url: 10.60.11.60
+  port: 5050
+  user: root
+  
+yowie.framework:
+  name: Yowie
+  principal: yowie-principal
+  externalUrl: http://localhost:8080
+  
+logging.level:
+  com.vendavo.mesos.yowie: INFO
+  org.springframework.integration: INFO

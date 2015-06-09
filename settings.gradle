@@ -1,0 +1,2 @@
+include 'yowie-api', 'yowie-statistics', 'yowie-statistics-es', 'yowie-framework', 'yowie-web'
+

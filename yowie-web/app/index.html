@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="yowieApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Yowie</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css"/>
+    <link rel="stylesheet" href="app.css">
+
+    <script src="/yowie_backend_url.js" type="text/javascript"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    
+    <script src="bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+    <script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js" type="text/javascript"></script>
+    <script src="bower_components/underscore/underscore-min.js" type="text/javascript"></script>
+    <script src="bower_components/moment/min/moment.min.js"></script>
+
+    <script src="bower_components/sockjs/sockjs.min.js" type="text/javascript"></script>
+    <script src="bower_components/stomp-websocket/lib/stomp.min.js" type="text/javascript"></script>
+    <script src="bower_components/lodash/lodash.min.js" type="text/javascript"></script>
+
+    <script src="bower_components/angular/angular.min.js" type="text/javascript"></script>
+    <script src="bower_components/angular-route/angular-route.min.js" type="text/javascript"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js" type="text/javascript"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js" type="text/javascript"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
+    <script src="app.js" type="text/javascript"></script>
+    <script src="services.js" type="text/javascript"></script>
+    <script src="resources.js" type="text/javascript"></script>
+    <script src="statusView/status.js" type="text/javascript"></script>
+    <script src="taskView/task.js" type="text/javascript"></script>
+    <script src="components/date/date.js" type="text/javascript"></script>
+    <script src="components/event/event.js" type="text/javascript"></script>
+    <script src="components/service/service-directives.js" type="text/javascript"></script>
+    <script src="components/graph/graph-directives.js" type="text/javascript"></script>
+    <script src="components/duration/yw-duration.js" type="text/javascript"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Yowie</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse" ng-controller="MenuController">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <div style="padding-top: 15px; padding-right: 10px;">
+                        <a href="#/">Status&nbsp;<span class="badge">{{availableResources.value.cpus}}/{{availableResources.value.mem}}</span></a>
+                        <div yw-status service="services.resource"></div>
+                    </div>
+                </li>
+                <li>
+                    <div style="padding-top: 15px; padding-right: 10px;">
+                        <a href="#/tasks">Tasks&nbsp;<span yw-counter service="services.task"></span></a>
+                        <div yw-status service="services.task"></div>
+                    </div>
+                </li>
+                <li><a href="https://github.com/vendavo/yowie/wiki" target="_blank">Documentation</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row" ng-view></div>
+</div>
+
+</body>
+</html>
