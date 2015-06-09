@@ -18,6 +18,7 @@ This type of flow is needed for automatic integration / performance tests.
 It's not enough to start container when other finishes. It's needed to be able start next container(s) 
 when some reached wanted status (e.g. Ready).
 
+For more information about REST and types, see: https://github.com/vendavo/yowie/wiki/REST
 
 ## Features
 
@@ -56,7 +57,7 @@ Yowie is based on Spring Boot. So once it's built it can be run as standalone ap
 However there is also Docker support:
 
 ```
-docker run -d --net=host -p 8080:8080 -e "LIBPROCESS_IP=10.60.11.80" -e "mesos.url=10.60.11.80" -e "yowie.framework.externalUrl=http://10.60.11.80:8080" dockerregistry.dc.vendavo.com:5000/yowie_0.21.1:0.1.0-SNAPSHOT
+docker run -d --net=host -p 8080:8080 -e "LIBPROCESS_IP=10.60.11.80" -e "mesos.url=10.60.11.80" -e "yowie.framework.externalUrl=http://10.60.11.80:8080" registry_url/yowie_0.21.1:0.1.0-SNAPSHOT
 ```
 
 where:
@@ -74,7 +75,7 @@ where:
 
 ### Simple task request
 
-Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory available. Docker container to be run is __dockerregistry.dc.vendavo.com:5000/eps-benchmarks-runner:v2__ and bunch of environment variables.
+Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory available. Docker container to be run is __registry_url/eps-benchmarks-runner:v2__ and bunch of environment variables.
 
 ```javascript 
 {
@@ -82,7 +83,7 @@ Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory avai
   "cpus": 4,
   "mem": 14700,
   "container": {
-    "image": "dockerregistry.dc.vendavo.com:5000/eps-benchmarks-runner:v2",
+    "image": "registry_url/eps-benchmarks-runner:v2",
     "network": "BRIDGE"
   },
   "env": {
@@ -107,7 +108,7 @@ Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory avai
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v1",
+        "image": "registry_url/yowie-dep-tester:v1",
         "network": "BRIDGE"
       }
     },
@@ -116,7 +117,7 @@ Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory avai
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v1",
+        "image": "registry_url/yowie-dep-tester:v1",
         "network": "BRIDGE"
       },
       "dependsOn": {
@@ -129,7 +130,7 @@ Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory avai
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v1",
+        "image": "registry_url/yowie-dep-tester:v1",
         "network": "BRIDGE"
       },
       "dependsOn": {
@@ -142,7 +143,7 @@ Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory avai
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v1",
+        "image": "registry_url/yowie-dep-tester:v1",
         "network": "BRIDGE"
       },
       "dependsOn": {
@@ -155,7 +156,7 @@ Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory avai
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v1",
+        "image": "registry_url/yowie-dep-tester:v1",
         "network": "BRIDGE"
       },
       "dependsOn": {
@@ -168,7 +169,7 @@ Run task w/ name __micro-benchmark-3227__, __4__ cores and __14700__ memory avai
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v1",
+        "image": "registry_url/yowie-dep-tester:v1",
         "network": "BRIDGE"
       },
       "dependsOn": {
@@ -193,7 +194,7 @@ Same example as above w/ added constraints
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v2",
+        "image": "registry_url/yowie-dep-tester:v2",
         "network": "BRIDGE",
         "privileged": true,
         "portMappings": [
@@ -212,7 +213,7 @@ Same example as above w/ added constraints
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v2",
+        "image": "registry_url/yowie-dep-tester:v2",
         "network": "BRIDGE",
         "portMappings": [
           {"containerPort": 8080, "hostPort": 31102}
@@ -231,7 +232,7 @@ Same example as above w/ added constraints
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v2",
+        "image": "registry_url/yowie-dep-tester:v2",
         "network": "BRIDGE",
         "portMappings": [
           {"containerPort": 8080, "hostPort": 31103}
@@ -250,7 +251,7 @@ Same example as above w/ added constraints
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v2",
+        "image": "registry_url/yowie-dep-tester:v2",
         "network": "BRIDGE",
         "portMappings": [
           {"containerPort": 8080, "hostPort": 31104}
@@ -269,7 +270,7 @@ Same example as above w/ added constraints
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v2",
+        "image": "registry_url/yowie-dep-tester:v2",
         "network": "BRIDGE",
         "portMappings": [
           {"containerPort": 8080, "hostPort": 31105}
@@ -288,7 +289,7 @@ Same example as above w/ added constraints
       "cpus": 1,
       "mem": 64,
       "container": {
-        "image": "dockerregistry.dc.vendavo.com:5000/yowie-dep-tester:v2",
+        "image": "registry_url/yowie-dep-tester:v2",
         "network": "BRIDGE",
         "portMappings": [
           {"containerPort": 8080, "hostPort": 31106}
