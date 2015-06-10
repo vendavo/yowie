@@ -1,0 +1,6 @@
+*.iml
+build
+data
+.gradletasknamecache
+yowie-web/app/bower_components
+yowie-web/node_modules

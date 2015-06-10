@@ -31,3 +31,5 @@ project.tasks.npmInstall.outputs.upToDateWhen {
      
     return bowerComponents.lastModified() >= bower.lastModified()
 }
+
+project.tasks.build.dependsOn(project.tasks.npmInstall)
