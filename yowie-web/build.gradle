@@ -1,5 +1,15 @@
+plugins {
+    id "com.moowork.grunt" version "0.10"
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'com.moowork.grunt'
+
+node {
+    version = '0.12.1'
+    download = true
+}
 
 sourceSets {
     main {
@@ -7,4 +17,17 @@ sourceSets {
             srcDir "${projectDir}/app"
         }
     }
+}
+
+project.tasks.npmInstall.outputs.upToDateWhen { 
+    
+    def bowerComponents = file('app/bower_components')
+    
+    if (!bowerComponents.exists()) {
+        return false
+    }
+    
+    def bower = file('bower.json')
+     
+    return bowerComponents.lastModified() >= bower.lastModified()
 }
