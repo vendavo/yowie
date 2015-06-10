@@ -12,18 +12,6 @@ jar {
     version = '0.1.0-SNAPSHOT'
 }
 
-def binariesType = {
-
-    switch (System.properties.'os.name') {
-
-        case 'Mac OS X':
-            return 'dylib'
-        default:
-            return 'so'
-    }
-}
-
-configurations.create('binaries')
 configurations.create('angular')
 
 sourceSets {
@@ -60,8 +48,6 @@ dependencies {
     compile 'com.netflix.feign:feign-core:7.2.1'
     compile 'com.netflix.feign:feign-jackson:7.2.1'
 
-    binaries "org.apache.mesos:libmesos:$mesos.version@${binariesType()}"
-
     testCompile "org.springframework.boot:spring-boot-starter-test"
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'org.mockito:mockito-all:1.10.19'
@@ -73,21 +59,6 @@ dependencies {
     angular project(':yowie-web')
 }
 
-task downloadBinaries(type: Copy) {
-
-    from configurations.binaries
-    into project.rootDir
-}
-
-task cleanBinaries() {
-
-    def binaries = new File(project.rootDir, "libmesos-${mesos.version}.dylib")
-
-    if (binaries.exists()) {
-        binaries.delete()
-    }
-}
-
 task extractDeps(type: Copy) {
 
     from {
@@ -96,6 +67,4 @@ task extractDeps(type: Copy) {
     into new File(buildDir, "yowie-web/static")
 }
 
-project.tasks.clean.dependsOn(project.tasks.cleanBinaries)
 project.tasks.processResources.dependsOn(project.tasks.extractDeps)
-project.tasks.build.dependsOn(project.tasks.downloadBinaries)
