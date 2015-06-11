@@ -84,13 +84,11 @@ class MesosTaskTranslatorSpec extends Specification {
         info
         resource
 
-        resource.ranges.rangeCount == 3
+        resource.ranges.rangeCount == 2
         resource.ranges.rangeList[0].begin == 5050
         resource.ranges.rangeList[0].end == 5050
         resource.ranges.rangeList[1].begin == 9090
-        resource.ranges.rangeList[1].end == 9090
-        resource.ranges.rangeList[2].begin == 9091
-        resource.ranges.rangeList[2].end == 9091
+        resource.ranges.rangeList[1].end == 9091
     }
 
     def "should translate env variables correctly and add yowie variables"() {

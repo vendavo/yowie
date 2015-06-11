@@ -19,7 +19,6 @@ import static org.apache.mesos.Protos.Value.*
  * Created by vtajzich
  */
 @Component
-@CompileStatic
 class MesosTaskTranslator implements TaskTranslator {
 
     @Autowired
@@ -28,6 +27,7 @@ class MesosTaskTranslator implements TaskTranslator {
     @Value('${yowie.framework.externalUrl}')
     String externalUrl
 
+    @CompileStatic
     @Override
     Protos.TaskInfo translate(TaskDescription description) {
 
@@ -43,6 +43,7 @@ class MesosTaskTranslator implements TaskTranslator {
         return translateTask(taskId, description.resource.offer, commandInfo, containerInfo, description.task)
     }
 
+    @CompileStatic
     private Protos.TaskInfo translateTask(Protos.TaskID taskId, Protos.Offer offer, Protos.CommandInfo.Builder commandInfo, Protos.ContainerInfo.Builder containerInfo, Task task) {
 
         Protos.TaskInfo.Builder taskInfo = Protos.TaskInfo.newBuilder()
@@ -71,20 +72,21 @@ class MesosTaskTranslator implements TaskTranslator {
 
         if (task.container.portMappings) {
 
-            //TODO: compute ranges - not create new range for each port
-            List<Range> ranges = task.container.portMappings
-                    .sort { it.hostPort }
-                    .collect { Range.newBuilder().setBegin(it.hostPort).setEnd(it.hostPort).build() }
+            Optional<List<Range>> ranges = task.container.portMappings.stream()
+                    .sorted()
+                    .map({ [Range.newBuilder().setBegin(it.hostPort).setEnd(it.hostPort).build()] })
+                    .reduce(this.&reduceRanges)
 
             taskInfo.addResources(Protos.Resource.newBuilder()
                     .setName(ResourceType.PORTS.value)
                     .setType(Type.RANGES)
                     .setRanges(Ranges.newBuilder()
-                    .addAllRange(ranges)
+                    .addAllRange(ranges.orElse([]))
                     .build()))
         }
     }
 
+    @CompileStatic
     protected void translateContainerInfo(Task task, Protos.ContainerInfo.Builder containerInfo, Protos.ContainerInfo.DockerInfo.Builder dockerInfo) {
 
         containerInfo.setDocker(dockerInfo)
@@ -102,15 +104,16 @@ class MesosTaskTranslator implements TaskTranslator {
         containerInfo.addAllVolumes(volumes)
     }
 
+    @CompileStatic
     protected Protos.ContainerInfo.DockerInfo.Builder translateDocker(Task task) {
 
         Container container = task.container
 
         def dockerInfo = Protos.ContainerInfo.DockerInfo.newBuilder()
-        dockerInfo.setImage(container.image)
-        dockerInfo.setNetwork(networkTranslator.translate(container.network))
-        dockerInfo.setPrivileged(container.privileged)
-        dockerInfo.setForcePullImage(task.container.forcePull)
+                .setImage(container.image)
+                .setNetwork(networkTranslator.translate(container.network))
+                .setPrivileged(container.privileged)
+                .setForcePullImage(task.container.forcePull)
 
         List<Protos.ContainerInfo.DockerInfo.PortMapping> mappings = container.portMappings.collect {
 
@@ -124,11 +127,7 @@ class MesosTaskTranslator implements TaskTranslator {
         dockerInfo.addAllPortMappings(mappings)
 
         List<Protos.Parameter> parameters = container.parameters.collect {
-
-            return Protos.Parameter.newBuilder()
-                    .setKey(it.key)
-                    .setValue(it.value)
-                    .build()
+            return Protos.Parameter.newBuilder().setKey(it.key).setValue(it.value).build()
         }
 
         dockerInfo.addAllParameters(parameters)
@@ -136,26 +135,18 @@ class MesosTaskTranslator implements TaskTranslator {
         return dockerInfo
     }
 
+    @CompileStatic
     protected Protos.CommandInfo.Builder createCommand(Protos.Environment.Builder environment) {
-        def commandInfo = Protos.CommandInfo.newBuilder()
-        commandInfo.setEnvironment(environment)
-        commandInfo.setShell(false)
-        return commandInfo
+        return Protos.CommandInfo.newBuilder().setEnvironment(environment).setShell(false)
     }
 
+    @CompileStatic
     protected Protos.Environment.Builder translateEnvVariables(Task task) {
 
         def environment = Protos.Environment.newBuilder()
 
-        task.env.collect {
-
-            def variable = Protos.Environment.Variable.newBuilder()
-            variable.setName(it.key)
-            variable.setValue(it.value)
-
-            return variable
-
-        }.each { environment.addVariables(it) }
+        task.env.collect { Protos.Environment.Variable.newBuilder().setName(it.key).setValue(it.value) }
+                .each { environment.addVariables(it) }
 
         environment.addVariables(Protos.Environment.Variable.newBuilder().setName("YOWIE_TASK_ID").setValue(task.id))
         environment.addVariables(Protos.Environment.Variable.newBuilder().setName("YOWIE_URL").setValue(externalUrl))
@@ -164,6 +155,7 @@ class MesosTaskTranslator implements TaskTranslator {
         return environment
     }
 
+    @CompileStatic
     protected Mode translateMode(com.vendavo.mesos.yowie.api.domain.Mode mode) {
 
         switch (mode) {
@@ -173,5 +165,27 @@ class MesosTaskTranslator implements TaskTranslator {
             case com.vendavo.mesos.yowie.api.domain.Mode.RW:
                 return Mode.RW
         }
+    }
+
+    @CompileStatic
+    private List<Range> reduceRanges(List<Range> ranges, List<Range> rangeList) {
+
+        def range = rangeList.first()
+        def rangeToAdd = range
+
+        if (!ranges.empty) {
+
+            Range previous = ranges.last()
+
+            if (previous.end + 1 >= range.begin) {
+
+                ranges.remove(previous)
+                rangeToAdd = Range.newBuilder().setBegin(previous.begin).setEnd(range.end).build()
+            }
+        }
+
+        ranges.add(rangeToAdd)
+
+        return ranges
     }
 }
