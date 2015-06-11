@@ -110,6 +110,7 @@ class MesosTaskTranslator implements TaskTranslator {
         dockerInfo.setImage(container.image)
         dockerInfo.setNetwork(networkTranslator.translate(container.network))
         dockerInfo.setPrivileged(container.privileged)
+        dockerInfo.setForcePullImage(task.container.forcePull)
 
         List<Protos.ContainerInfo.DockerInfo.PortMapping> mappings = container.portMappings.collect {
 

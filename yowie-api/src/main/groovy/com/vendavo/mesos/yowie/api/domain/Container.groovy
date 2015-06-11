@@ -22,6 +22,8 @@ class Container {
     
     boolean privileged
     
+    boolean forcePull
+    
     @Valid
     List<Parameter> parameters = []
     
