@@ -1,6 +1,8 @@
 package com.vendavo.mesos.yowie.api.mesos
 
 import com.vendavo.mesos.yowie.api.domain.Constraint
+import com.vendavo.mesos.yowie.api.domain.Container
+import com.vendavo.mesos.yowie.api.domain.PortMapping
 import com.vendavo.mesos.yowie.api.domain.Task
 import spock.lang.Specification
 
@@ -12,14 +14,21 @@ class ResourceOfferSpec extends Specification {
     ResourceOffer offer
 
     void setup() {
-        offer = new ResourceOffer(null, 10d, 4096d, 262144d, [], [:])
+
+        Range<Integer> port8080_8085 = 8080..8085
+        Range<Integer> port9090_9091 = 9090..9091
+
+        offer = new ResourceOffer(null, 10d, 4096d, 262144d, [port8080_8085, port9090_9091], [:])
     }
 
     def "should decide capacity request"() {
 
         given:
 
-        Task task = new Task(cpus: cpus, mem: mem)
+        PortMapping portMapping = new PortMapping(containerPort: 8080, hostPort: port)
+        Container container = new Container(portMappings: [portMapping])
+
+        Task task = new Task(cpus: cpus, mem: mem, container: container)
 
         when:
 
@@ -31,11 +40,19 @@ class ResourceOfferSpec extends Specification {
 
         where:
 
-        cpus | mem    | expected
-        1    | 1024   | true
-        10   | 4096   | true
-        10.1 | 4096   | false
-        10   | 4096.1 | false
+        cpus | mem    | port | expected
+        1    | 1024   | 8080 | true
+        10   | 4096   | 8080 | true
+        10.1 | 4096   | 8080 | false
+        10   | 4096.1 | 8080 | false
+        1    | 1024   | 8081 | true
+        1    | 1024   | 8082 | true
+        1    | 1024   | 8083 | true
+        1    | 1024   | 8084 | true
+        1    | 1024   | 8085 | true
+        1    | 1024   | 9090 | true
+        1    | 1024   | 9091 | true
+        1    | 1024   | 9095 | false
 
     }
 

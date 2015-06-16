@@ -26,13 +26,9 @@ class DependencyValidator implements ConstraintValidator<ValidDependencies, List
 
         List<String> taskNames = value.collect { it.name }
 
-        Optional<Boolean> notValidExists = value.stream()
+        return value.stream()
                 .filter({ it.dependsOn != null })
                 .map({ it.dependsOn })
-                .filter({ !taskNames.contains(it.name) })
-                .map({ false })
-                .findFirst()
-
-        return notValidExists.orElse(true)
+                .allMatch({ taskNames.contains(it.name) })
     }
 }

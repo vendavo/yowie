@@ -25,8 +25,6 @@ class TerminateTaskValidator implements ConstraintValidator<ValidTerminateTask, 
         }
 
         return value.tasks.stream()
-                .filter({ it.name == value.terminateTask.name })
-                .map({ it != null })
-                .findFirst().orElse(false)
+                .anyMatch({ it.name == value.terminateTask.name })
     }
 }
