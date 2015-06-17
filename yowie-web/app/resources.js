@@ -14,8 +14,8 @@ resources.factory('TaskRestService', ['$resource',
 
         var service = {};
 
-        service.getTasks = function (callback) {
-            return rest.query(callback);
+        service.getTasks = function () {
+            return rest.query();
         };
 
         service.getFinishedTasks = function () {
@@ -42,8 +42,8 @@ resources.factory('GroupRestService', ['$resource',
 
         var service = {};
 
-        service.getGroups = function (callback) {
-            return rest.query(callback);
+        service.getGroups = function () {
+            return rest.query();
         };
 
         service.getFinishedGroups = function() {

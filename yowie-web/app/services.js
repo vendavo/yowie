@@ -51,7 +51,7 @@ function AbstractService(socketUrl, topic, $q, $timeout, $rootScope, mapToHolder
 
     var getMessage = function (data) {
 
-        mapToHolderValue(holder, JSON.parse(data))
+        mapToHolderValue(holder, data)
 
         $rootScope.$apply();
 
