@@ -22,6 +22,18 @@ For more information about REST and types, see: https://github.com/vendavo/yowie
 
 ## Features
 
+* Core features
+    * Can run single tasks
+    * Can run multiple tasks
+        * Including advanced flow like dependencies
+        * Terminate task & status
+          * You can specify which task & status combination is final. So when the task reaches the status Yowie kill all tasks in group.
+        * Constraints
+          * It's possible to restrict where the container must be run by setting attributes on mesos slave and specify them in request
+          * Yowie always check available resources for memory, cpu, disk etc so it'll start a container on slave closest to the requirements (if constraints are matched)
+    * Port mapping, volumes etc
+        * Yowie supports all standard docker container settings
+
 * REST API to control Yowie
     * Run single tasks
     * Run group of tasks w/ advanced flow
@@ -29,13 +41,6 @@ For more information about REST and types, see: https://github.com/vendavo/yowie
     * Kill tasks
 * Web UI
     * There is a web ui written in AngularJS & sockets to have real time information about tasks and groups
-* Constraints
-    * It's possible to restrict where the container must be run by setting attributes on mesos slave and specify them in request
-    * Yowie always check available resources for memory, cpu, disk etc so it'll start a container on slave closest to the requirements (if constraints are matched)
-* Terminate task & status
-    * You can specify which task & status combination is final. So when the task reaches the status Yowie kill all tasks in group.
-* Port mapping, volumes etc
-    * Yowie supports all standard docker container settings
 
 ## How to build
 
