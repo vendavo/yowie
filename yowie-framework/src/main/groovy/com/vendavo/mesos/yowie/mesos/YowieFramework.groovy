@@ -7,6 +7,8 @@ import com.vendavo.mesos.yowie.api.domain.TaskContext
 import com.vendavo.mesos.yowie.api.domain.TaskStatus
 import org.apache.mesos.SchedulerDriver
 
+import java.util.stream.Stream
+
 /**
  * Created by vtajzich
  */
@@ -30,11 +32,11 @@ interface YowieFramework {
     
     ResourcesAvailable getAvailableResources()
     
-    Collection<GroupContext> getAllGroupContexts()
-    
-    Collection<TaskContext> getFinishedTaskContexts()
-    
-    Collection<GroupContext> getFinishedGroupContexts()
+    Stream<GroupContext> getAllGroupContexts()
+
+    Stream<TaskContext> getFinishedTaskContexts()
+
+    Stream<GroupContext> getFinishedGroupContexts()
 
     TaskDescription getNextTask()
     
@@ -42,7 +44,7 @@ interface YowieFramework {
 
     void offerRescinded(String id)
 
-    Collection<TaskContext> getAllTasks()
+    Stream<TaskContext> getAllTasks()
     
     int queueSize()
 }

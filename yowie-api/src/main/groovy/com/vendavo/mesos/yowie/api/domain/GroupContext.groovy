@@ -80,7 +80,7 @@ class GroupContext {
      * @return read-only collection
      */
     Collection<TaskContext> getTaskContexts() {
-        return Collections.unmodifiableCollection(taskContexts)
+        return new ArrayList<TaskContext>(taskContexts)
     }
 
     /**

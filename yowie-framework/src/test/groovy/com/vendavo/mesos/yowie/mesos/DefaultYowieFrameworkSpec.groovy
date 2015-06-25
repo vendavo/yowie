@@ -10,6 +10,8 @@ import spock.lang.Specification
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+import static java.util.stream.Collectors.toList
+
 /**
  * Created by vtajzich
  */
@@ -145,7 +147,7 @@ class DefaultYowieFrameworkSpec extends Specification {
 
         when:
 
-        def tasks = framework.finishedTaskContexts
+        List<TaskContext> tasks = framework.finishedTaskContexts.collect(toList())
 
         then:
 
@@ -178,7 +180,7 @@ class DefaultYowieFrameworkSpec extends Specification {
 
         when:
 
-        def groups = framework.finishedGroupContexts
+        def groups = framework.finishedGroupContexts.collect(toList())
 
         then:
 

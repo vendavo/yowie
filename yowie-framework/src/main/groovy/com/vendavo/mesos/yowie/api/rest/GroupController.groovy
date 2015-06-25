@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*
 
 import javax.validation.Valid
 
+import static java.util.stream.Collectors.toList
+
 /**
  * Created by vtajzich
  */
@@ -30,11 +32,11 @@ class GroupController {
     
     @RequestMapping('')
     Collection<GroupContext> getAllGroups() {
-        return framework.getAllGroupContexts()
+        return framework.getAllGroupContexts().collect(toList())
     }
 
     @RequestMapping('/status/finished')
     Collection<GroupContext> getFinishedGroups() {
-        return framework.getFinishedGroupContexts()
+        return framework.getFinishedGroupContexts().collect(toList())
     }
 }

@@ -114,7 +114,7 @@ public class TaskControllerTest {
     @Test
     public void "should return finished task contexts"() throws Exception {
 
-        when(framework.getFinishedTaskContexts()).thenReturn([new TaskContext(new Task())])
+        when(framework.getFinishedTaskContexts()).thenReturn([new TaskContext(new Task())].stream())
         
         mockMvc.perform(get('/tasks/status/finished')
                 .contentType(contentType)

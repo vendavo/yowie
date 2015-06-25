@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 
 import javax.validation.Valid
 
+import static java.util.stream.Collectors.toList
+
 /**
  * Created by vtajzich
  */
@@ -76,11 +78,11 @@ class TaskController {
 
     @RequestMapping('')
     Collection<TaskContext> getAllTasks() {
-        return framework.getAllTasks()
+        return framework.getAllTasks().collect(toList())
     }
 
     @RequestMapping('/status/finished')
     Collection<TaskContext> getFinishedTasks() {
-        return framework.getFinishedTaskContexts()
+        return framework.getFinishedTaskContexts().collect(toList())
     }
 }

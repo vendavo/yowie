@@ -151,8 +151,8 @@ class DefaultYowieFramework implements YowieFramework {
         return availableResources
     }
 
-    Collection<GroupContext> getAllGroupContexts() {
-        return Collections.unmodifiableCollection(groupContexts.sort { it.created })
+    Stream<GroupContext> getAllGroupContexts() {
+        return groupContexts.stream().sorted({ GroupContext lh, GroupContext rh -> lh.created.compareTo(rh.created) } as Comparator<GroupContext>)
     }
 
     TaskDescription getNextTask() {
@@ -179,19 +179,19 @@ class DefaultYowieFramework implements YowieFramework {
 
         if (tasksToBeProcessed.empty) {
 
-            GroupContext context = allGroupContexts.find { it.hasMoreTasksToProcess() }
+            Optional<GroupContext> context = allGroupContexts.filter({ it.hasMoreTasksToProcess() }).findFirst()
 
-            if (context) {
+            if (context.present) {
                 return false
             }
 
-            context = allGroupContexts.stream().filter({ !it.running && !it.done }).findFirst().orElse(null)
+            context = allGroupContexts.filter({ !it.running && !it.done }).findFirst()
 
-            if (!context) {
+            if (!context.present) {
                 return false
             }
 
-            next = context.taskContexts.first().task
+            next = context.get().taskContexts.first().task
             tasksToBeProcessed.add(next)
 
         } else {
@@ -206,27 +206,18 @@ class DefaultYowieFramework implements YowieFramework {
     }
 
     @Override
-    Collection<TaskContext> getAllTasks() {
-
-        return Collections.unmodifiableCollection(
-                groupContexts.collect { it.taskContexts }.flatten() as Collection<TaskContext>
-        )
+    Stream<TaskContext> getAllTasks() {
+        return groupContexts.stream().flatMap({ it.taskContexts.stream() })
     }
 
     @Override
-    Collection<TaskContext> getFinishedTaskContexts() {
-
-        return Collections.unmodifiableCollection(
-                groupContexts.collect { it.taskContexts.findAll { it.done } }.flatten() as Collection<TaskContext>
-        )
+    Stream<TaskContext> getFinishedTaskContexts() {
+        return groupContexts.stream().flatMap({ it.taskContexts.stream().filter({ it.done }) })
     }
 
     @Override
-    Collection<GroupContext> getFinishedGroupContexts() {
-
-        return Collections.unmodifiableCollection(
-                groupContexts.findAll { it.taskContexts.find { !it.done } == null }
-        )
+    Stream<GroupContext> getFinishedGroupContexts() {
+        return groupContexts.stream().filter({ it.taskContexts.stream().allMatch({ it.done }) })
     }
 
     @Override
