@@ -1,7 +1,12 @@
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
+
+jar {
+    baseName = 'yowie-api'
+}
 
 dependencies {
 
