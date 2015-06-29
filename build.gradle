@@ -32,7 +32,6 @@ subprojects {
     }
 
     group = 'com.vendavo.mesos.yowie'
-    version = '0.1.0-SNAPSHOT'
 }
 
 
