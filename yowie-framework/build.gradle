@@ -9,7 +9,7 @@ sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
 jar {
-    baseName = 'yowie'
+    baseName = 'yowie-framework'
     version = '0.1.0-SNAPSHOT'
 }
 
