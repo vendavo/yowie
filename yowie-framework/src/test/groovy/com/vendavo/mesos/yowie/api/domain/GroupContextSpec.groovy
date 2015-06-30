@@ -3,7 +3,10 @@ package com.vendavo.mesos.yowie.api.domain
 import spock.lang.Specification
 
 import java.time.LocalDateTime
+import java.util.stream.Collectors
 import java.util.stream.Stream
+
+import static java.util.stream.Collectors.toList
 
 /**
  * Created by vtajzich
@@ -81,7 +84,7 @@ class GroupContextSpec extends Specification {
             it.endTime = null
         }
 
-        def lastTaskContext = context.taskContexts.last()
+        def lastTaskContext = context.taskContexts.collect(toList()).last()
         lastTaskContext.startTime = LocalDateTime.now()
         lastTaskContext.endTime = LocalDateTime.now()
 
@@ -140,7 +143,7 @@ class GroupContextSpec extends Specification {
             it.endTime = null
         }
 
-        def lastTaskContext = context.taskContexts.last()
+        def lastTaskContext = context.taskContexts.collect(toList()).last()
         lastTaskContext.startTime = null
 
         when:
@@ -195,7 +198,7 @@ class GroupContextSpec extends Specification {
 
         given:
 
-        context.taskContexts[0].startTime = LocalDateTime.now()
+        context.taskContexts.findFirst().get().startTime = LocalDateTime.now()
 
         when:
 
@@ -211,8 +214,10 @@ class GroupContextSpec extends Specification {
 
         given:
 
-        context.taskContexts.first().startTime = startTime
-        context.taskContexts.last().endTime = endTime
+        List<TaskContext> contexts = context.taskContexts.collect(toList())
+        
+        contexts.find().startTime = startTime
+        contexts.last().endTime = endTime
 
         when:
 

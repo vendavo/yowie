@@ -1,5 +1,7 @@
 package com.vendavo.mesos.yowie.api.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.vendavo.mesos.yowie.api.validation.ValidDependencies
 import com.vendavo.mesos.yowie.api.validation.ValidTerminateTask
 import groovy.transform.CompileStatic
@@ -25,9 +27,9 @@ class Group {
     
     @Valid
     Dependency terminateTask
-    
+
     @ValidDependencies
-    List<Task> tasks = []
+    private List<Task> tasks = []
     
     Group addTask(Task task) {
         tasks.add(task)
@@ -36,5 +38,15 @@ class Group {
 
     String getType() {
         return type ?: name
+    }
+
+    @JsonIgnore
+    List<Task> getTasks() {
+        return tasks
+    }
+
+    @JsonProperty('tasks')
+    void setTasks(List<Task> tasks) {
+        this.tasks = tasks
     }
 }

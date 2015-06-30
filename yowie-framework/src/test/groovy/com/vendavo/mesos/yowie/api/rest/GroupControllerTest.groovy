@@ -169,7 +169,7 @@ public class GroupControllerTest {
     public void "should return 201 for minimal group request"() throws Exception {
 
         GroupContext context = new GroupContext(new Group(tasks: [new Task()]))
-        context.taskContexts[0].startTime = LocalDateTime.now()
+        context.taskContexts.findFirst().get().startTime = LocalDateTime.now()
 
         when(framework.createTask((Group) any(Group))).thenReturn(context)
 

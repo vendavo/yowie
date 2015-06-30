@@ -112,8 +112,7 @@ class DefaultYowieFramework implements YowieFramework {
         send(currentTaskContext)
 
         if (status.termination || context.shouldFinish(currentTaskContext, status)) {
-            context.taskContexts.stream()
-                    .filter({ !it.events.last().status.isFinal() })
+            context.taskContexts.filter({ !it.events.last().status.isFinal() })
                     .forEach({ kill(it.task.id) })
             return
         }
@@ -136,7 +135,7 @@ class DefaultYowieFramework implements YowieFramework {
     TaskContext getTaskContext(String id) {
 
         Optional<TaskContext> taskContext = groupContexts.stream()
-                .flatMap({ it.taskContexts.stream() })
+                .flatMap({ it.taskContexts })
                 .filter({ it.task.id == id })
                 .findFirst()
 
@@ -191,7 +190,7 @@ class DefaultYowieFramework implements YowieFramework {
                 return false
             }
 
-            next = context.get().taskContexts.first().task
+            next = context.get().taskContexts.findFirst().get().task
             tasksToBeProcessed.add(next)
 
         } else {
@@ -207,17 +206,17 @@ class DefaultYowieFramework implements YowieFramework {
 
     @Override
     Stream<TaskContext> getAllTasks() {
-        return groupContexts.stream().flatMap({ it.taskContexts.stream() })
+        return groupContexts.stream().flatMap({ it.taskContexts })
     }
 
     @Override
     Stream<TaskContext> getFinishedTaskContexts() {
-        return groupContexts.stream().flatMap({ it.taskContexts.stream().filter({ it.done }) })
+        return groupContexts.stream().flatMap({ it.taskContexts.filter({ it.done }) })
     }
 
     @Override
     Stream<GroupContext> getFinishedGroupContexts() {
-        return groupContexts.stream().filter({ it.taskContexts.stream().allMatch({ it.done }) })
+        return groupContexts.stream().filter({ it.taskContexts.allMatch({ it.done }) })
     }
 
     @Override

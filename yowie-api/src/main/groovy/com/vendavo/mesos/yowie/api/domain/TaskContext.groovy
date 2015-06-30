@@ -19,7 +19,6 @@ class TaskContext {
 
     final Task task
     ResourceOffer resource
-    
 
     LocalDateTime startTime
     LocalDateTime endTime
@@ -48,15 +47,19 @@ class TaskContext {
     boolean isStarted() {
         return startTime != null
     }
-    
+
     boolean isRunning() {
         return startTime != null && endTime == null
     }
-    
+
     boolean isDone() {
         return endTime != null
     }
-    
+
+    boolean isError() {
+        return events.stream().anyMatch({ it.status == StaticTaskStatus.ERROR })
+    }
+
     TaskStatus getLastStatus() {
         return events.last().status
     }
@@ -75,11 +78,11 @@ class TaskContext {
      * @return duration between startTime and endTime. If either is null then duration is zero.
      */
     long getDuration() {
-        
+
         if (!startTime || !endTime) {
             return 0
         }
-        
+
         return startTime.until(endTime, ChronoUnit.MILLIS)
     }
 

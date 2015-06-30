@@ -12,7 +12,8 @@ angular.module('yowieApp', [
     'yowieApp.event.event-directive',
     'yowieApp.service.service-directive',
     'yowieApp.graph.graph-directives',
-    'yowieApp.filter.moment'
+    'yowieApp.filter.moment',
+    'yowieApp.group'
 ]).
     config(['$routeProvider', function ($routeProvider) {
 

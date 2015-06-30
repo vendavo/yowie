@@ -2,14 +2,14 @@ package com.vendavo.mesos.yowie.api.domain
 
 import com.fasterxml.jackson.annotation.JsonGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.CompileStatic
 import groovy.transform.EqualsAndHashCode
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.function.Function
-import java.util.function.Predicate
+import java.util.stream.Collectors
 import java.util.stream.Stream
 
 /**
@@ -49,25 +49,29 @@ class GroupContext {
      * @return TRUE if there is at least one task which didn't started yet
      */
     boolean hasMoreTasksToProcess() {
-        return isRunning() && containsTasks({ TaskContext tc -> !tc.started }, { it }, false)
+        return isRunning() && taskContexts.stream().anyMatch({ !it.started })
     }
 
     /**
      * @return TRUE if at least one task is running
      */
     boolean isRunning() {
-        return containsTasks({ TaskContext tc -> tc.running }, { it }, false)
+        return taskContexts.stream().anyMatch({ it.running })
     }
 
     /**
      * @return TRUE if all tasks are done
      */
     boolean isDone() {
-        return containsTasks({ TaskContext tc -> tc.done }, { !it }, true)
+        return taskContexts.stream().allMatch({ it.done })
+    }
+
+    boolean isError() {
+        return taskContexts.stream().anyMatch({ it.error })
     }
 
     /**
-     * 
+     *
      * @param context task context which has reached a status
      * @param status status
      * @return TRUE if terminate definition equals to given task and status
@@ -79,15 +83,20 @@ class GroupContext {
     /**
      * @return read-only collection
      */
-    Collection<TaskContext> getTaskContexts() {
-        return new ArrayList<TaskContext>(taskContexts)
+    Stream<TaskContext> getTaskContexts() {
+        return taskContexts.stream()
+    }
+    
+    @JsonProperty('taskContexts')
+    List<TaskContext> getTaskContextsJson() {
+        return getTaskContexts().collect(Collectors.toList())
     }
 
     /**
-     * 
+     *
      * It's not sum duration on tasks as there might be tasks which are run in parallel. 
      * So it's needed to calculate duration between two times.
-     * 
+     *
      * @return duration between start time and end time.
      */
     long getDuration() {
@@ -108,7 +117,8 @@ class GroupContext {
     String getEndTimeJson() {
         return endTime ? DateTimeFormatter.ISO_DATE_TIME.format(endTime) : ''
     }
-    
+
+    //TODO: use optional
     LocalDateTime getStartTime() {
         return taskContexts.stream()
                 .filter({ it.startTime != null })
@@ -116,16 +126,13 @@ class GroupContext {
                 .sorted()
                 .findFirst().orElse(null)
     }
-    
+
+    //TODO: use optional
     LocalDateTime getEndTime() {
         return taskContexts.stream()
                 .filter({ it.endTime != null })
                 .map({ it.endTime })
                 .sorted({ LocalDateTime o1, LocalDateTime o2 -> o2.compareTo(o1) } as Comparator)
                 .findFirst().orElse(null)
-    }
-    
-    private boolean containsTasks(Function mapper, Predicate predicate, boolean defaultValue) {
-        return taskContexts.stream().map(mapper).filter(predicate).findFirst().orElse(defaultValue)
     }
 }

@@ -23,4 +23,23 @@ angular.module('yowieApp.date.date-directive', [])
                 }
             }
         }
+    })
+    .directive('ywTimeFromFirstTillNow', function() {
+
+        return {
+
+            restrict: 'AE',
+            templateUrl: 'components/date/time-from-first-till-now.html',
+            scope: {
+                groupContext: '='
+            },
+            link: function (scope, element) {
+
+                var taskContext = _.first(scope.groupContext.taskContexts);
+
+                scope.startTime = taskContext.startTime;
+                
+                scope.duration = moment.utc(taskContext.startTime).toNow(true);
+            }
+        }
     });
