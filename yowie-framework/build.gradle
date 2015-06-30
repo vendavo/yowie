@@ -68,4 +68,19 @@ task extractDeps(type: Copy) {
     into new File(buildDir, "yowie-web/static")
 }
 
+task bintrayInfo(type: Copy) {
+    from 'bintray-info.json'
+    into 'build'
+    rename {
+        "${project.name}-${version}-bintray-info.json"
+    }
+    expand(
+        version: version
+    )
+}
+
+artifacts {
+  archives file: file("${buildDir}/${project.name}-${version}-bintray-info.json"), builtBy: bintrayInfo
+}
+
 project.tasks.processResources.dependsOn(project.tasks.extractDeps)
