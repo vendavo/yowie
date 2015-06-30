@@ -6,7 +6,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">In progress</h3>
         </div>
-        <div class="panel-body" ng-repeat="context in groupContexts.value  | filter: {done: false} | orderBy: 'startTime'">
+        <div class="panel-body" ng-repeat="context in groupContexts.value.inProgress  | filter: {done: false} | orderBy: 'startTime'">
 
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -43,7 +43,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">Done</h3>
         </div>
-        <div class="panel-body" ng-repeat="context in groupContexts.value  | filter: {done: true} | orderBy: '-endTime'">
+        <div class="panel-body" ng-repeat="context in groupContexts.value.finished  | filter: {done: true} | orderBy: '-endTime'">
 
             <div class="panel panel-default">
                 <div class="panel-heading">

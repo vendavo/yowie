@@ -51,6 +51,10 @@ function AbstractService(socketUrl, topic, $q, $timeout, $rootScope, mapToHolder
 
     var getMessage = function (data) {
 
+        if (typeof data === 'string') {
+            data = JSON.parse(data)
+        }
+
         mapToHolderValue(holder, data)
 
         $rootScope.$apply();
@@ -106,24 +110,7 @@ services.service("ResourceService", function ($q, $timeout, $rootScope) {
 
 services.service("TaskService", function ($q, $timeout, $rootScope, TaskRestService) {
 
-    var service = new AbstractService("/ws/tasks", "/topic/tasks", $q, $timeout, $rootScope, function (tasksHolder, taskContext) {
-
-        var tasks = tasksHolder.value;
-
-        var index = _.findIndex(tasks, function (item) {
-            return item.task.id === taskContext.task.id;
-        });
-
-        if (index === -1) {
-            tasks.push(taskContext);
-        } else {
-            tasks[index] = taskContext;
-        }
-    });
-
-    service.initialize([], function () {
-        service.setMessageHolderValue(TaskRestService.getTasks());
-    });
+    var service = {};
 
     service.kill = function (taskContext) {
         TaskRestService.kill(taskContext.task.id);
@@ -134,27 +121,53 @@ services.service("TaskService", function ($q, $timeout, $rootScope, TaskRestServ
 
 services.service("GroupService", function ($q, $timeout, $rootScope, GroupRestService) {
 
-    var service = new AbstractService("/ws/groups", "/topic/groups", $q, $timeout, $rootScope, function (groupsHolder, groupContext) {
-
-        var groups = groupsHolder.value;
+    var addToList = function (groupContext, groups, maxLimit) {
 
         var index = _.findIndex(groups, function (item) {
             return item.group.id === groupContext.group.id;
         });
 
         if (index === -1) {
+
+            if (groups.length >= maxLimit) {
+                groups = _.rest(groups)
+            }
+
             groups.push(groupContext);
+
         } else {
             groups[index] = groupContext;
         }
+
+        return groups;
+    };
+
+
+    var service = new AbstractService("/ws/groups", "/topic/groups", $q, $timeout, $rootScope, function (groupsHolder, groupContext) {
+
+        var allGroups = groupsHolder.value;
+
+        if (groupContext.done) {
+            
+            allGroups.finished = addToList(groupContext, allGroups.finished, 2)
+            allGroups.inProgress = _.without(allGroups.inProgress, _.find(allGroups.inProgress, function (item) {
+                return groupContext.group.id == item.group.id
+            }));
+            
+        } else {
+            allGroups.inProgress = addToList(groupContext, allGroups.inProgress, 5)
+        }
     });
+
     service.initialize([], function () {
-        service.setMessageHolderValue(GroupRestService.getGroups());
+
+        service.setMessageHolderValue({
+
+            inProgress: GroupRestService.getGroups({page: 0, size: 5}),
+            finished: GroupRestService.getFinishedGroups({page: 0, size: 2})
+        });
     });
 
     return service;
 });
 
-services.run(function (TaskService, GroupService) {
-    console.log('TaskService and GroupService are ready!');
-});

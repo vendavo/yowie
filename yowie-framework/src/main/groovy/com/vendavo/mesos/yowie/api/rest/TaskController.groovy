@@ -6,6 +6,7 @@ import com.vendavo.mesos.yowie.api.domain.TaskStatus
 import com.vendavo.mesos.yowie.mesos.YowieFramework
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -77,12 +78,18 @@ class TaskController {
     }
 
     @RequestMapping('')
-    Collection<TaskContext> getAllTasks() {
-        return framework.getAllTasks().collect(toList())
+    Collection<TaskContext> getAllTasks(Pageable pageable) {
+        return framework.getAllTasks()
+                .skip(pageable.pageNumber * pageable.pageSize)
+                .limit(pageable.pageSize)
+                .collect(toList())
     }
 
     @RequestMapping('/status/finished')
-    Collection<TaskContext> getFinishedTasks() {
-        return framework.getFinishedTaskContexts().collect(toList())
+    Collection<TaskContext> getFinishedTasks(Pageable pageable) {
+        return framework.getFinishedTaskContexts()
+                .skip(pageable.pageNumber * pageable.pageSize)
+                .limit(pageable.pageSize)
+                .collect(toList())
     }
 }

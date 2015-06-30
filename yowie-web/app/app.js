@@ -24,14 +24,12 @@ angular.module('yowieApp', [
             controller: 'TaskController'
         }).otherwise({redirectTo: '/status'});
     }])
-    .controller('MenuController', ['$scope', 'ResourceService', 'TaskService', 'GroupService', function ($scope, resourceService, taskService, groupService) {
+    .controller('MenuController', ['$scope', 'ResourceService', 'GroupService', function ($scope, resourceService, groupService) {
 
-        $scope.taskContexts = taskService.getLastMessageHolder();
         $scope.availableResources = resourceService.getLastMessageHolder();
 
         $scope.services = {
             resource: resourceService,
-            task: taskService,
             group: groupService
         };
     }]);

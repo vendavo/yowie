@@ -9,17 +9,17 @@ resources.factory('TaskRestService', ['$resource',
         });
         
         var finishedRest = $resource(YOWIE_BACKEND_URL + '/tasks/status/finished', {}, {
-            query: {method: 'GET', params: {}, isArray: true}
+            query: {method: 'GET', params: {page: '@page', size: '@size'}, isArray: true}
         });
 
         var service = {};
 
-        service.getTasks = function () {
-            return rest.query();
+        service.getTasks = function (params) {
+            return rest.query(params);
         };
 
-        service.getFinishedTasks = function () {
-            return finishedRest.query();
+        service.getFinishedTasks = function (params) {
+            return finishedRest.query(params);
         };
 
         service.kill = function (id) {
@@ -33,21 +33,21 @@ resources.factory('GroupRestService', ['$resource',
     function ($resource) {
 
         var rest = $resource(YOWIE_BACKEND_URL + '/groups', {}, {
-            query: {method: 'GET', params: {}, isArray: true}
+            query: {method: 'GET', params: {page: '@page', size: '@size'}, isArray: true}
         });
 
         var finishedRest = $resource(YOWIE_BACKEND_URL + '/groups/status/finished', {}, {
-            query: {method: 'GET', params: {}, isArray: true}
+            query: {method: 'GET', params: {page: '@page', size: '@size'}, isArray: true}
         });
 
         var service = {};
 
-        service.getGroups = function () {
-            return rest.query();
+        service.getGroups = function (params) {
+            return rest.query(params);
         };
 
-        service.getFinishedGroups = function() {
-            return finishedRest.query();
+        service.getFinishedGroups = function(params) {
+            return finishedRest.query(params);
         }
 
         return service;
