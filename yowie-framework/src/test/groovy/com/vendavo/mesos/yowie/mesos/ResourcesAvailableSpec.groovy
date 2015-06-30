@@ -1,6 +1,8 @@
 package com.vendavo.mesos.yowie.mesos
 
 import com.vendavo.mesos.yowie.api.domain.Constraint
+import com.vendavo.mesos.yowie.api.domain.Container
+import com.vendavo.mesos.yowie.api.domain.PortMapping
 import com.vendavo.mesos.yowie.api.domain.Task
 import com.vendavo.mesos.yowie.api.mesos.ResourceOffer
 import com.vendavo.mesos.yowie.exception.NoResourcesAvailableException
@@ -16,7 +18,7 @@ class ResourcesAvailableSpec extends Specification {
 
     def setup() {
 
-        resources = new ResourcesAvailableBuilder().withResource('1', 4, 4096, 'name': 'resource-1').withResource('2', 2, 2048, 'name': 'resource-2').build()
+        resources = new ResourcesAvailableBuilder().withResource('1', 4, 4096, 1520..1550, 'name': 'resource-1').withResource('2', 2, 2048, 8080..8081, 'name': 'resource-2').build()
     }
 
     def "should allocate resources accordingly"() {
@@ -43,6 +45,29 @@ class ResourcesAvailableSpec extends Specification {
         1    | 3072 | 3                     | 1024
         4    | 4096 | 0                     | 0
         2    | 2048 | 0                     | 0
+    }
+
+    def "should allocate resources according to ports available"() {
+
+        given:
+
+        Task task = new Task(cpus: 1, mem: 10, container: new Container(portMappings: [new PortMapping(hostPort: hostPort)]))
+
+        when:
+
+        ResourceOffer allocatedOn = resources.allocate(task)
+
+        then:
+
+        allocatedOn.id == expectedId
+
+        where:
+
+        hostPort | expectedId
+        1520     | '1'
+        1521     | '1'
+        8080     | '2'
+        8081     | '2'
     }
 
     def "should allocated correct resource"() {

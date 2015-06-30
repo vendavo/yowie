@@ -27,6 +27,11 @@ class ResourcesAvailableBuilder {
         builders << new ResourceOfferBuilder().withId(id).withCpus(cpus).withMem(mem).withAttrs(attrs)
         return this
     }
+    
+    ResourcesAvailableBuilder withResource(Map<String, String> attrs, String id, double cpus, double mem, IntRange ports) {
+        builders << new ResourceOfferBuilder().withId(id).withCpus(cpus).withMem(mem).withAttrs(attrs).withPorts(ports)
+        return this
+    }
 
     ResourcesAvailable build() {
         
