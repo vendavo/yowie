@@ -9,7 +9,6 @@ yowie.framework:
   name: Yowie
   principal: yowie-principal
   externalUrl: http://localhost:8080
-  pauseBetweenTasks: 0
   
 logging.level:
   com.vendavo.mesos.yowie: INFO
