@@ -15,10 +15,13 @@ import org.apache.mesos.Scheduler
 import org.apache.mesos.SchedulerDriver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.integration.support.MessageBuilder
 import org.springframework.messaging.MessageChannel
 
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
 /**
  * Created by vtajzich
@@ -53,6 +56,11 @@ public class MesosTaskScheduler implements Scheduler {
     @Autowired
     MessageChannel eventChannel
 
+    @Value('${yowie.framework.pauseBetweenTasks}')
+    int pauseBetweenTasks
+
+    LocalDateTime lastUpdate = LocalDateTime.now()
+
     @Override
     public void registered(SchedulerDriver driver, Protos.FrameworkID frameworkId, Protos.MasterInfo masterInfo) {
 
@@ -75,6 +83,17 @@ public class MesosTaskScheduler implements Scheduler {
 
         ResourcesAvailable resourcesAvailable = framework.availableResources
 
+        //This is needed due a bug in mesos where resources are offered however ports are not freed yet 
+        // (e.g. oracle instance needs more time to free up ports)
+        if (shouldWaitToFinishPause()) {
+
+            log.info(""" Waiting to finish pause between tasks. """)
+
+            returnAllOffers(driver, offers)
+
+            return
+        }
+
         taskCollector.collect().each { RunUnit ru ->
 
             String taskIds = ru.tasks.collect { it.name }.join(',')
@@ -90,6 +109,16 @@ public class MesosTaskScheduler implements Scheduler {
 
             driver.launchTasks(ru.ids, ru.tasks, ru.filters)
         }
+
+        lastUpdate = LocalDateTime.now()
+    }
+
+    void returnAllOffers(SchedulerDriver driver, List<Protos.Offer> offers) {
+        driver.launchTasks(offers.collect { it.id }, [])
+    }
+
+    boolean shouldWaitToFinishPause() {
+        return LocalDateTime.now().isBefore(lastUpdate.plus(pauseBetweenTasks, ChronoUnit.MILLIS))
     }
 
     @Override
