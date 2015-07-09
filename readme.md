@@ -20,6 +20,10 @@ when some reached wanted status (e.g. Ready).
 
 For more information about REST and types, see: https://github.com/vendavo/yowie/wiki/REST
 
+## Licence
+
+This project is under MIT license.
+
 ## Features
 
 * Core features
