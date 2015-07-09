@@ -7,7 +7,7 @@
         "website_url": "https://github.com/vendavo/yowie",
         "issue_tracker_url": "https://github.com/vendavo/yowie/issues",
         "vcs_url": "https://github.com/vendavo/yowie.git",
-        "licenses": ["LGPL-2.1"],
+        "licenses": ["MIT"],
         "labels": ["mesos", "framework"],
         "public_download_numbers": true
     },
