@@ -59,10 +59,10 @@ gradle clean build
 ## How to run
 
 Yowie is based on Spring Boot. So once it's built it can be run as standalone application (jar or via sh script in distribution archive).
-However there is also Docker support:
+However there is also Docker support. It's important to run it on host network because it must establish direct TCP connection to mesos master. Therefor you need to specify correct IP of the host:
 
 ```
-docker run -d --net=host -p 8080:8080 -e "LIBPROCESS_IP=10.60.11.80" -e "mesos.url=10.60.11.80" -e "yowie.framework.externalUrl=http://10.60.11.80:8080" registry_url/yowie_0.21.1:0.1.0-SNAPSHOT
+docker run -d --net=host -p 8080:8080 -e "LIBPROCESS_IP=10.60.11.80" -e "mesos.url=10.60.11.80" -e "yowie.framework.externalUrl=http://10.60.11.80:8080" registry_url/yowie_0.22.1:0.1.2
 ```
 
 where:
