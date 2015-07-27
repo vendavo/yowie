@@ -1,7 +1,7 @@
-FROM vtajzich/mesos-java8-docker:0.22.1
+FROM vtajzich/mesos-java8-docker:0.23.0
 MAINTAINER Vitek Tajzich <vtajzich@vendavo.com>
 
-ENV YOWIE_VERSION 0.1.3
+ENV YOWIE_VERSION 0.1.4
 
 RUN mkdir /home/yowie
 WORKDIR /home/yowie
