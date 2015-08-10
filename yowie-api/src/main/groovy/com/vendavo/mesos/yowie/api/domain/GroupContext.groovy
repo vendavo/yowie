@@ -38,10 +38,10 @@ class GroupContext {
 
     Stream<TaskContext> getNext(String taskId, TaskStatus status) {
 
-        String name = taskContexts.find { it.task.id == taskId }?.task?.name
+        String name = ((Task)((TaskContext)taskContexts.find { it.task.id == taskId })?.task)?.name
 
         return taskContexts.stream()
-                .filter({ it.task?.dependsOn?.name == name && it.task?.dependsOn?.status == status })
+                .filter({ ((Dependency)((Task)it.task)?.dependsOn)?.name == name && ((Dependency)((Task)it.task)?.dependsOn)?.status == status })
                 .filter({ it != null })
     }
 

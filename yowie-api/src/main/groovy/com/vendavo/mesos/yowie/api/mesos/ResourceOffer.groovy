@@ -35,7 +35,7 @@ class ResourceOffer {
         this.disk = disk
         this.ports = ports
         this.attributes = attributes
-        this.id = offer?.getId()?.value
+        this.id = ((Protos.OfferID)offer?.getId())?.value
     }
 
     boolean hasCapacity(Task task) {
