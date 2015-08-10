@@ -1,3 +1,5 @@
+apply plugin: 'sonar-runner'
+
 buildscript {
     ext {
         springBootVersion = '1.2.5.RELEASE'
@@ -10,6 +12,7 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE")
         classpath 'se.transmode.gradle:gradle-docker:1.2'
+        classpath 'com.bmuschko:gradle-clover-plugin:2.0.1'
     }
 }
 
@@ -34,4 +37,26 @@ subprojects {
     group = 'com.vendavo.mesos.yowie'
 }
 
+sonarRunner {
+    toolVersion = 2.4
+    sonarProperties {
+        property "sonar.host.url", "https://${System.env.SONAR_HOST}"
+        property "sonar.jdbc.url", "jdbc:mysql://${System.env.SONAR_HOST}/sonar"
+        property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+        property "sonar.jdbc.username", System.env.SONAR_JDBC_USERNAME
+        property "sonar.jdbc.password", System.env.SONAR_JDBC_PASSWORD
+        property "sonar.clover.reportPath", "build/reports/clover/clover.xml"
+    }
+}
 
+if (System.getProperty('clover') == 'true') {
+  allprojects {
+      apply plugin: 'com.bmuschko.clover'
+      clover {
+          licenseLocation = "${System.env.HOME}/.clover/clover.license"
+      }
+      dependencies {
+          clover 'com.atlassian.clover:clover:4.0.5'
+      }
+  }
+}
