@@ -148,12 +148,12 @@ services.service("GroupService", function ($q, $timeout, $rootScope, GroupRestSe
         var allGroups = groupsHolder.value;
 
         if (groupContext.done) {
-            
+
             allGroups.finished = addToList(groupContext, allGroups.finished, 2)
             allGroups.inProgress = _.without(allGroups.inProgress, _.find(allGroups.inProgress, function (item) {
                 return groupContext.group.id == item.group.id
             }));
-            
+
         } else {
             allGroups.inProgress = addToList(groupContext, allGroups.inProgress, 5)
         }
@@ -171,3 +171,15 @@ services.service("GroupService", function ($q, $timeout, $rootScope, GroupRestSe
     return service;
 });
 
+services.service("YowiePropertiesService", function ($http) {
+
+    var service = {};
+
+    $http.get(YOWIE_BACKEND_URL + '/yowie.json').then(function(response) {
+        service.yowie = response.data.yowie;
+    }, function(response) {
+
+    });
+    
+    return service;
+});

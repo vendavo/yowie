@@ -1,3 +1,5 @@
+import groovy.json.JsonOutput
+
 plugins {
     id "com.moowork.grunt" version "0.10"
 }
@@ -19,6 +21,10 @@ sourceSets {
     }
 }
 
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:$groovy.version"
+}
+
 project.tasks.npmInstall.outputs.upToDateWhen { 
     
     def bowerComponents = file('app/bower_components')
@@ -32,4 +38,24 @@ project.tasks.npmInstall.outputs.upToDateWhen {
     return bowerComponents.lastModified() >= bower.lastModified()
 }
 
-project.tasks.build.dependsOn(project.tasks.npmInstall)
+task generateYowieFile << {
+
+    Properties gradleProperties = new Properties()
+    gradleProperties.load(new FileInputStream(new File(project.rootDir, 'gradle.properties')))
+
+    def json = JsonOutput.toJson([
+            'yowie': ['version': gradleProperties.getProperty('version')]
+    ])
+    
+    File yowie = new File("${projectDir}/app", 'yowie.json')
+    
+    if (yowie.exists()) {
+        yowie.delete()
+    }
+    
+    yowie << json
+}
+
+project.tasks.generateYowieFile.dependsOn(project.tasks.npmInstall)
+
+project.tasks.build.dependsOn(project.tasks.generateYowieFile)

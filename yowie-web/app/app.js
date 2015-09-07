@@ -33,4 +33,7 @@ angular.module('yowieApp', [
             resource: resourceService,
             group: groupService
         };
+    }])
+    .controller('YowiePropertiesController', ['$scope', 'YowiePropertiesService', function ($scope, yowiePropertiesService) {
+        $scope.yowieService = yowiePropertiesService;
     }]);
