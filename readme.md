@@ -47,7 +47,7 @@ This project is under MIT license.
 Needed:
 
 * Java 8
-* Gradle 2.4+
+* Gradle 3.3+
 
 and just run 
 

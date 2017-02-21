@@ -20,8 +20,8 @@ public interface TaskStatus {
     static TaskStatus createInstance(String newValue) {
 
         Optional<TaskStatus> staticStatus = Stream.of(StaticTaskStatus.values())
-                .filter((StaticTaskStatus s) -> s.getValue().equals(newValue))
-                .map((s) -> (TaskStatus) s)
+                .filter(status -> status.getValue().equals(newValue))
+                .map((status) -> (TaskStatus) status)
                 .findFirst();
 
         return staticStatus.orElse(new CustomTaskStatus(newValue));
