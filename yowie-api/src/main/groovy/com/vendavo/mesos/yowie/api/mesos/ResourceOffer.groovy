@@ -74,9 +74,10 @@ class ResourceOffer {
     }
 
     @Override
-    public String toString() {
-        return """ id: $id, cpus: $cpus, mem: $mem, disk: $disk, ports: ${
-            getPortsDescription()
-        }, attributes: $attributes """
+    String toString() {
+        
+        String portDescription = getPortsDescription()
+        
+        return """ id: $id, cpus: $cpus, mem: $mem, disk: $disk, ports: $portDescription, attributes: $attributes """
     }
 }

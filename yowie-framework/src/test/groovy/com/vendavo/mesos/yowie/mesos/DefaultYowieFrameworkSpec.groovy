@@ -3,6 +3,7 @@ package com.vendavo.mesos.yowie.mesos
 import com.vendavo.mesos.yowie.api.domain.*
 import com.vendavo.mesos.yowie.api.mesos.ResourceOffer
 import com.vendavo.mesos.yowie.exception.NoSuchTaskException
+import com.vendavo.mesos.yowie.mesos.builder.ResourcesAvailableBuilder
 import org.apache.mesos.SchedulerDriver
 import org.springframework.messaging.MessageChannel
 import spock.lang.Specification
@@ -40,7 +41,7 @@ class DefaultYowieFrameworkSpec extends Specification {
 
         given:
 
-        framework.updateResources(new ResourcesAvailable([new ResourceOffer(null, 10d, 1024d, 0d, [], [:])]))
+        framework.updateResources(new ResourcesAvailable(new HashSet<ResourceOffer>([new ResourceOffer(null, 10d, 1024d, 0d, [], [:])])))
 
         Task task1 = new Task(name: 'task1')
         Task task2 = new Task(name: 'task2', dependsOn: new Dependency('task1', StaticTaskStatus.FINISHED))
@@ -77,7 +78,7 @@ class DefaultYowieFrameworkSpec extends Specification {
 
         given:
 
-        framework.updateResources(new ResourcesAvailable([new ResourceOffer(null, 10d, 1024d, 0d, [], [:])]))
+        framework.updateResources(new ResourcesAvailable(new HashSet<ResourceOffer>([new ResourceOffer(null, 10d, 1024d, 0d, [], [:])])))
 
         Task task1_1 = new Task(name: 'g1-task1')
         Task task1_2 = new Task(name: 'g1-task2', dependsOn: new Dependency('g1-task1', StaticTaskStatus.FINISHED))
@@ -396,5 +397,48 @@ class DefaultYowieFrameworkSpec extends Specification {
         new CustomTaskStatus('my_custom_status')       | StaticTaskStatus.RUNNING                       | 0
         new CustomTaskStatus('my_custom_status')       | new CustomTaskStatus('my_custom_status')       | 3 //as status is not final, therefor task still running it'll be killed as well
         new CustomTaskStatus('my_custom_status', true) | new CustomTaskStatus('my_custom_status', true) | 2 //as status is final, therefor other tasks will be killed only
+    }
+    
+    def "should aggregate resources offers"() {
+        
+        when:
+        
+        def originalOffers = framework.availableResources.offers
+        
+        then:
+        
+        originalOffers.isEmpty()
+        
+        when: 'new offer become available'
+        
+        ResourcesAvailable resources1 = new ResourcesAvailableBuilder().withResource('1', 1, 8).build()
+        
+        framework.updateResources(resources1)
+        
+        then:
+        
+        framework.availableResources.offers.size() == 1
+        framework.availableResources.offers[0].id == '1'
+        
+        when: 'more resources become available'
+
+        ResourcesAvailable resources2 = new ResourcesAvailableBuilder().withResource('2', 4, 16).build()
+        
+        framework.updateResources(resources2)
+        
+        then:
+     
+        framework.availableResources.offers.size() == 2
+        
+        when: 'updated of first resource become available'
+
+        ResourcesAvailable resources1Update = new ResourcesAvailableBuilder().withResource('1', 8, 8).build()
+        
+        framework.updateResources(resources1Update)
+        
+        then: 'original offer should be updated accordingly'
+        
+        framework.availableResources.offers.size() == 2
+        framework.availableResources.offers.find { it.id == '1' }.cpus == 8d
     }
 }

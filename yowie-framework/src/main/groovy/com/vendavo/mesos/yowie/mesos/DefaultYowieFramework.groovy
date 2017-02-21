@@ -40,7 +40,7 @@ class DefaultYowieFramework implements YowieFramework {
 
     private boolean registered
     private String id
-    private ResourcesAvailable availableResources = new ResourcesAvailable([])
+    private ResourcesAvailable availableResources = new ResourcesAvailable(new HashSet<ResourceOffer>())
     private List<GroupContext> groupContexts = Collections.synchronizedList([])
     private Queue<Task> tasksToBeProcessed = new ConcurrentLinkedDeque<>()
     private SchedulerDriver driver
@@ -73,7 +73,7 @@ class DefaultYowieFramework implements YowieFramework {
     }
 
     void updateResources(ResourcesAvailable resources) {
-        this.availableResources = resources
+        this.availableResources.merge(resources)
     }
 
     GroupContext createTask(Group group) {

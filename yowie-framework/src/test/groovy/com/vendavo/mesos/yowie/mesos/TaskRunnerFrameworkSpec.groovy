@@ -46,7 +46,7 @@ class TaskRunnerFrameworkSpec extends Specification {
 
         given:
 
-        ResourcesAvailable available = new ResourcesAvailable([new ResourceOffer(null, 10, 2048, 200000, [], [:])])
+        ResourcesAvailable available = new ResourcesAvailable(new HashSet<ResourceOffer>([new ResourceOffer(null, 10, 2048, 200000, [], [:])]))
 
         Task task1 = new Task(name: '1', cpus: 3, mem: 128)
         Task task2 = new Task(name: '2', cpus: 3, mem: 128)
@@ -117,7 +117,7 @@ class TaskRunnerFrameworkSpec extends Specification {
         given:
 
         def offer = new ResourceOffer(null, 10, 2048, 200000, [], [:])
-        ResourcesAvailable available = new ResourcesAvailable([offer])
+        ResourcesAvailable available = new ResourcesAvailable(new HashSet<ResourceOffer>([offer]))
         framework.updateResources(available)
 
         Task task1 = new Task(name: '1', cpus: 3, mem: 128)

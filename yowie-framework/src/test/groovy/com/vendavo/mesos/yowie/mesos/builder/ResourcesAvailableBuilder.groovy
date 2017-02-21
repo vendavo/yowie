@@ -11,7 +11,7 @@ import groovy.transform.CompileStatic
 class ResourcesAvailableBuilder {
 
     List<ResourceOfferBuilder> builders = []
-    List<ResourceOffer> offers = []
+    Set<ResourceOffer> offers = new HashSet<>()
 
     ResourcesAvailableBuilder withResource(ResourceOffer offer) {
         offers << offer

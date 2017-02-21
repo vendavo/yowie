@@ -11,10 +11,18 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ResourcesAvailable {
 
-    List<ResourceOffer> offers = Collections.synchronizedList([])
+    Set<ResourceOffer> offers = new HashSet<>()
 
-    ResourcesAvailable(List<ResourceOffer> offers) {
-        this.offers = offers
+    ResourcesAvailable(Set<ResourceOffer> offers) {
+        this.offers = new HashSet<>(offers)
+    }
+    
+    void merge(ResourcesAvailable newResources) {
+        
+        newResources.offers.each {
+            this.offers.remove(it)
+            this.offers.add(it)
+        }
     }
 
     ResourceOffer allocate(Task task) {

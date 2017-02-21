@@ -19,7 +19,7 @@ class MesosOffersTranslator implements OffersTranslator {
 
         List<ResourceOffer> resourceOffers = offers.collect { translate(it) }
 
-        return new ResourcesAvailable(resourceOffers)
+        return new ResourcesAvailable(new HashSet<ResourceOffer>(resourceOffers))
     }
 
     private double getScalarValue(Protos.Resource resource) {

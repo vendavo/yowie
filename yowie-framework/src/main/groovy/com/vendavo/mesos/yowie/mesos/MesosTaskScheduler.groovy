@@ -132,7 +132,7 @@ class MesosTaskScheduler implements Scheduler {
     @Override
     void slaveLost(SchedulerDriver driver, Protos.SlaveID slaveId) {
 
-        log.info(""" slaveId="$slaveId" Slave lost """)
+        log.info(""" slaveId="$slaveId.value" Slave lost """)
 
         eventChannel.send(MessageBuilder.withPayload(new SlaveLostEvent(slaveId)).build())
     }
