@@ -12,6 +12,7 @@ import org.apache.mesos.SchedulerDriver
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.context.event.ApplicationFailedEvent
 import org.springframework.boot.context.event.ApplicationStartedEvent
+import org.springframework.boot.context.event.ApplicationStartingEvent
 import org.springframework.context.ApplicationContext
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.ContextStartedEvent
@@ -60,7 +61,7 @@ class ConnectionManagerSpec extends Specification {
 
         frameworkInfo = Protos.FrameworkInfo.newBuilder().setName('test').setUser('a user').setPrincipal('a principal').build()
 
-        manager = new ConnectionManager(mesosUrl: 'localhost', mesosPort: 8080, framework: framework, taskScheduler: scheduler, driverFactory: driverFactory, frameworkInfo: frameworkInfo)
+        manager = new ConnectionManager('localhost', '8080', framework, frameworkInfo, scheduler, driverFactory)
 
         WireMock.reset()
     }
@@ -131,10 +132,8 @@ class ConnectionManagerSpec extends Specification {
 
         numOfCalls | event
         1          | new DisconnectedEvent('source')
-        1          | new ExecutorLostEvent('source')
         1          | new MesosErrorEvent('source')
-        1          | new SlaveLostEvent('source')
-        1          | new ApplicationStartedEvent(Mock(SpringApplication), null)
+        1          | new ApplicationStartingEvent(Mock(SpringApplication), null)
         1          | new ContextStartedEvent(Mock(ApplicationContext))
         1          | new ContextRefreshedEvent(Mock(ApplicationContext))
         0          | new ApplicationFailedEvent(Mock(SpringApplication), null, null, null)

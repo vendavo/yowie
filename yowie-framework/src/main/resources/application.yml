@@ -1,6 +1,6 @@
 spring.groovy.template.cache: false
 mesos:
-  url: eps-perf.dc.vendavo.com
+  url: 10.101.11.50
 #  url: 10.60.11.60
   port: 5050
   user: root

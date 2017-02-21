@@ -25,7 +25,7 @@ import java.time.ZoneId
  */
 @CompileStatic
 @Slf4j
-public class MesosTaskScheduler implements Scheduler {
+class MesosTaskScheduler implements Scheduler {
 
     @Autowired
     TaskTranslator taskTranslator
@@ -54,7 +54,7 @@ public class MesosTaskScheduler implements Scheduler {
     MessageChannel eventChannel
 
     @Override
-    public void registered(SchedulerDriver driver, Protos.FrameworkID frameworkId, Protos.MasterInfo masterInfo) {
+    void registered(SchedulerDriver driver, Protos.FrameworkID frameworkId, Protos.MasterInfo masterInfo) {
 
         log.info(""" driver="$driver" frameworkId="$frameworkId.value" Framework registered. """)
 
@@ -62,12 +62,12 @@ public class MesosTaskScheduler implements Scheduler {
     }
 
     @Override
-    public void reregistered(SchedulerDriver driver, Protos.MasterInfo masterInfo) {
+    void reregistered(SchedulerDriver driver, Protos.MasterInfo masterInfo) {
         log.info(""" driver="$driver" Framework re-registered. """)
     }
 
     @Override
-    public void resourceOffers(SchedulerDriver driver, List<Protos.Offer> offers) {
+    void resourceOffers(SchedulerDriver driver, List<Protos.Offer> offers) {
 
         notifyResourcesChange(offers)
 
@@ -93,7 +93,7 @@ public class MesosTaskScheduler implements Scheduler {
     }
 
     @Override
-    public void offerRescinded(SchedulerDriver driver, Protos.OfferID offerId) {
+    void offerRescinded(SchedulerDriver driver, Protos.OfferID offerId) {
 
         log.info(""" offerId="$offerId.value" Resource offer rescinded. """)
 
@@ -101,7 +101,7 @@ public class MesosTaskScheduler implements Scheduler {
     }
 
     @Override
-    public void statusUpdate(SchedulerDriver driver, Protos.TaskStatus status) {
+    void statusUpdate(SchedulerDriver driver, Protos.TaskStatus status) {
 
         String taskId = status.taskId.value.split('_').first()
 
@@ -115,14 +115,14 @@ public class MesosTaskScheduler implements Scheduler {
     }
 
     @Override
-    public void frameworkMessage(SchedulerDriver driver, Protos.ExecutorID executorId, Protos.SlaveID slaveId, byte[] data) {
+    void frameworkMessage(SchedulerDriver driver, Protos.ExecutorID executorId, Protos.SlaveID slaveId, byte[] data) {
         log.info(""" driver="$driver" executorId="$executorId.value" slaveId="$slaveId.value" Received framework message: "${
             new String(data)
         }" """)
     }
 
     @Override
-    public void disconnected(SchedulerDriver driver) {
+    void disconnected(SchedulerDriver driver) {
 
         log.info("Disconnected")
 
@@ -130,7 +130,7 @@ public class MesosTaskScheduler implements Scheduler {
     }
 
     @Override
-    public void slaveLost(SchedulerDriver driver, Protos.SlaveID slaveId) {
+    void slaveLost(SchedulerDriver driver, Protos.SlaveID slaveId) {
 
         log.info(""" slaveId="$slaveId" Slave lost """)
 
@@ -138,7 +138,7 @@ public class MesosTaskScheduler implements Scheduler {
     }
 
     @Override
-    public void executorLost(SchedulerDriver driver, Protos.ExecutorID executorId, Protos.SlaveID slaveId, int status) {
+    void executorLost(SchedulerDriver driver, Protos.ExecutorID executorId, Protos.SlaveID slaveId, int status) {
 
         log.info(""" executorId="$executorId" slaveId="$slaveId" Executor lost. """)
 
@@ -146,7 +146,7 @@ public class MesosTaskScheduler implements Scheduler {
     }
 
     @Override
-    public void error(SchedulerDriver driver, String message) {
+    void error(SchedulerDriver driver, String message) {
 
         log.error(""" driver="$driver" $message""")
 
