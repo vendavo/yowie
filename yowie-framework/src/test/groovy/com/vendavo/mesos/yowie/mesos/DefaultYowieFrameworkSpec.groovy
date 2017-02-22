@@ -398,47 +398,4 @@ class DefaultYowieFrameworkSpec extends Specification {
         new CustomTaskStatus('my_custom_status')       | new CustomTaskStatus('my_custom_status')       | 3 //as status is not final, therefor task still running it'll be killed as well
         new CustomTaskStatus('my_custom_status', true) | new CustomTaskStatus('my_custom_status', true) | 2 //as status is final, therefor other tasks will be killed only
     }
-    
-    def "should aggregate resources offers"() {
-        
-        when:
-        
-        def originalOffers = framework.availableResources.offers
-        
-        then:
-        
-        originalOffers.isEmpty()
-        
-        when: 'new offer become available'
-        
-        ResourcesAvailable resources1 = new ResourcesAvailableBuilder().withResource('1', 1, 8).build()
-        
-        framework.updateResources(resources1)
-        
-        then:
-        
-        framework.availableResources.offers.size() == 1
-        framework.availableResources.offers[0].id == '1'
-        
-        when: 'more resources become available'
-
-        ResourcesAvailable resources2 = new ResourcesAvailableBuilder().withResource('2', 4, 16).build()
-        
-        framework.updateResources(resources2)
-        
-        then:
-     
-        framework.availableResources.offers.size() == 2
-        
-        when: 'updated of first resource become available'
-
-        ResourcesAvailable resources1Update = new ResourcesAvailableBuilder().withResource('1', 8, 8).build()
-        
-        framework.updateResources(resources1Update)
-        
-        then: 'original offer should be updated accordingly'
-        
-        framework.availableResources.offers.size() == 2
-        framework.availableResources.offers.find { it.id == '1' }.cpus == 8d
-    }
 }

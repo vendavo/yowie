@@ -73,7 +73,7 @@ class DefaultYowieFramework implements YowieFramework {
     }
 
     void updateResources(ResourcesAvailable resources) {
-        this.availableResources.merge(resources)
+        this.availableResources = resources
     }
 
     GroupContext createTask(Group group) {

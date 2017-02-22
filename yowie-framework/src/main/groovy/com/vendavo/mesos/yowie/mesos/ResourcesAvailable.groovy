@@ -17,14 +17,6 @@ class ResourcesAvailable {
         this.offers = new HashSet<>(offers)
     }
     
-    void merge(ResourcesAvailable newResources) {
-        
-        newResources.offers.each {
-            this.offers.remove(it)
-            this.offers.add(it)
-        }
-    }
-
     ResourceOffer allocate(Task task) {
 
         List<ResourceOffer> available = offers
